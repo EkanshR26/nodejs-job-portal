@@ -37,7 +37,7 @@ const options = {
     },
     servers: [
       {
-        url: "https://nodejs-job-portal-app.onrender.com"
+        url: "https://nodejs-job-portal-i2kq.onrender.com"
       },
     ],
   },
