@@ -166,5 +166,5 @@ export const jobStatsController = async (req, res) => {
         .reverse();
     res
         .status(200)
-        .json({ totlaJob: stats.length, defaultStats, monthlyApplication });
+        .json({ totalJob: stats.length, defaultStats, monthlyApplication });
 };
