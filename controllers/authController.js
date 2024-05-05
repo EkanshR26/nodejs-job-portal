@@ -36,24 +36,26 @@ export const loginController = async (req, res, next) => {
     const { email, password } = req.body;
     //validation
     if (!email || !password) {
-        next("Please Provide All Fields");
+        return next("Please Provide All Fields");
     }
     //find user by email
     const user = await userModel.findOne({ email }).select("+password");
     if (!user) {
-        next("Invalid Useraname or password");
+        return next("Invalid Username or Password");
     }
     //compare password
     const isMatch = await user.comparePassword(password);
     if (!isMatch) {
-        next("Invalid Useraname or password");
+        return next("Invalid Username or Password");
     }
-    user.password = undefined;
+    // Omitting sensitive fields from the user object
+    const { password: omitPassword, ...userData } = user.toObject();
+    // Generate JWT
     const token = user.createJWT();
     res.status(200).json({
         success: true,
         message: "Login Successfully",
-        user,
+        user: userData, // Sending user data without password
         token,
     });
 };
