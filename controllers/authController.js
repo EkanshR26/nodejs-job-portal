@@ -2,26 +2,26 @@ import userModel from "../models/userModel.js";
 
 export const registerController = async (req, res, next) => {
     const { name, email, password } = req.body;
-    // Validate
+    //validate
     if (!name) {
-        next("Name is required");
+        next("name is required");
     }
     if (!email) {
-        next("Email is required");
+        next("email is required");
     }
     if (!password) {
-        next("Password is required and must be greater than 6 characters");
+        next("password is required and greater than 6 character");
     }
-    const existingUser = await userModel.findOne({ email });
-    if (existingUser) {
-        next("Email is already registered. Please login.");
+    const exisitingUser = await userModel.findOne({ email });
+    if (exisitingUser) {
+        next("Email Already Register Please Login");
     }
     const user = await userModel.create({ name, email, password });
-    // Generate token
+    //token
     const token = user.createJWT();
-    res.status(201).json({
-        success: true,
-        message: "User created successfully",
+    res.status(201).send({
+        sucess: true,
+        message: "User Created Successfully",
         user: {
             name: user.name,
             lastName: user.lastName,
@@ -34,31 +34,26 @@ export const registerController = async (req, res, next) => {
 
 export const loginController = async (req, res, next) => {
     const { email, password } = req.body;
-    // Validation
+    //validation
     if (!email || !password) {
-        next("Please provide all fields");
+        next("Please Provide All Fields");
     }
-    // Find user by email
+    //find user by email
     const user = await userModel.findOne({ email }).select("+password");
     if (!user) {
-        next("Invalid username or password");
+        next("Invalid Useraname or password");
     }
-    // Compare password
+    //compare password
     const isMatch = await user.comparePassword(password);
     if (!isMatch) {
-        next("Invalid username or password");
+        next("Invalid Useraname or password");
     }
     user.password = undefined;
     const token = user.createJWT();
     res.status(200).json({
         success: true,
-        message: "Login successful",
-        user: {
-            name: user.name,
-            lastName: user.lastName,
-            email: user.email,
-            location: user.location,
-        },
+        message: "Login Successfully",
+        user,
         token,
     });
 };
