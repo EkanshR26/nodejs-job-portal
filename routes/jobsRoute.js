@@ -68,7 +68,7 @@ router.post("/create-job", userAuth, createJobController);
  * @swagger
  * /api/v1/jobs/get-job:
  *   get:
- *     summary: Get all jobs
+ *     summary: Retrieve all jobs
  *     tags: [Jobs]
  *     security:
  *       - bearerAuth: []
