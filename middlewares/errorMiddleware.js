@@ -1,27 +1,27 @@
-//error middleware || NEXT function
+// Error middleware || NEXT function
 const errorMiddleware = (err, req, res, next) => {
-    console.log(err);
-    const defaultErrors = {
+    // Log the error (sanitize or remove sensitive information before logging in production)
+    console.error("Error:", err);
+
+    // Default error response
+    let defaultError = {
         statusCode: 500,
-        message: err,
+        message: "Internal server error.",
     };
 
-    // missing filed error
+    // Handle specific error types
     if (err.name === "ValidationError") {
-        defaultErrors.statusCode = 400;
-        defaultErrors.message = Object.values(err.errors)
+        defaultError.statusCode = 400;
+        defaultError.message = Object.values(err.errors)
             .map((item) => item.message)
-            .join(",");
+            .join(", ");
+    } else if (err.code && err.code === 11000) {
+        defaultError.statusCode = 400;
+        defaultError.message = "Duplicate field value entered.";
     }
 
-    // duplicate error
-    if (err.code && err.code === 11000) {
-        defaultErrors.statusCode = 400;
-        defaultErrors.message = `${Object.keys(
-            err.keyValue
-        )} field has to be unique`;
-    }
-    res.status(defaultErrors.statusCode).json({ message: defaultErrors.message });
+    // Send the error response
+    res.status(defaultError.statusCode).json({ error: defaultError.message });
 };
 
 export default errorMiddleware;
