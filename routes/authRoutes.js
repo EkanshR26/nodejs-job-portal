@@ -1,11 +1,8 @@
 import express from "express";
-import {
-    loginController,
-    registerController,
-} from "../controllers/authController.js";
+import { loginController, registerController } from "../controllers/authController.js";
 import rateLimit from "express-rate-limit";
 
-//ip limiter
+// IP Limiter
 const limiter = rateLimit({
     windowMs: 15 * 60 * 1000, // 15 minutes
     max: 100, // Limit each IP to 100 requests per `window` (here, per 15 minutes)
@@ -13,10 +10,10 @@ const limiter = rateLimit({
     legacyHeaders: false, // Disable the `X-RateLimit-*` headers
 });
 
-//router object
+// Router object
 const router = express.Router();
 
-//routes
+// Routes
 
 /**
  * @swagger
@@ -45,7 +42,7 @@ const router = express.Router();
  *          description: user email address
  *        password:
  *          type: string
- *          description: user password should be greater then 6 character
+ *          description: user password should be greater than 6 characters
  *        location:
  *          type: string
  *          description: user location city or country
@@ -62,14 +59,14 @@ const router = express.Router();
  *  @swagger
  *  tags:
  *    name: Auth
- *    description: authentication apis
+ *    description: Authentication APIs
  */
 
 /**
  * @swagger
  * /api/v1/auth/register:
  *    post:
- *      summary: register new user
+ *      summary: Register a new user
  *      tags: [Auth]
  *      requestBody:
  *       required: true
@@ -79,23 +76,23 @@ const router = express.Router();
  *             $ref: '#/components/schemas/User'
  *      responses:
  *        200:
- *          description: user created successfully
+ *          description: User created successfully
  *          content:
  *            application/json:
  *              schema:
  *                $ref: '#/components/schemas/User'
  *        500:
- *          description: internal serevr error
+ *          description: Internal server error
  */
 
-// REGISTER || POPST
+// REGISTER || POST
 router.post("/register", limiter, registerController);
 
 /**
  * @swagger
  * /api/v1/auth/login:
  *  post:
- *    summary: login page
+ *    summary: User login endpoint
  *    tags: [Auth]
  *    requestBody:
  *      required: true
@@ -105,17 +102,17 @@ router.post("/register", limiter, registerController);
  *            $ref: '#/components/schemas/User'
  *    responses:
  *      200:
- *        description: login successfull
+ *        description: Login successful
  *        content:
  *          application/json:
  *            schema:
  *              $ref: '#/components/schemas/User'
  *      500:
- *        description: something went wrong
+ *        description: Internal server error
  */
 
 // LOGIN || POST
 router.post("/login", limiter, loginController);
 
-//export
+// Export
 export default router;
